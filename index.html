@@ -300,6 +300,14 @@
             margin-top: 3rem;
         }
 
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            color: #8b0040;
+            padding: 2rem;
+            font-size: 1.1rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -342,6 +350,7 @@
                 <p>My personal space where I share thoughts, experiences, and insights about life, technology, and everything in between.</p>
             </div>
 
+            <div id="loadingHome" class="loading">Loading posts...</div>
             <div class="blog-grid" id="blogGrid">
                 <!-- Blog posts will be dynamically loaded here -->
             </div>
@@ -382,6 +391,7 @@
             </form>
 
             <h3 style="color: #8b0040; margin: 2rem 0 1rem 0;">Manage Posts</h3>
+            <div id="loadingAdmin" class="loading">Loading posts...</div>
             <div id="adminPostsList">
                 <!-- Admin posts list will be loaded here -->
             </div>
@@ -394,6 +404,7 @@
                 <button class="btn" onclick="showCreatePost()">+ New Post</button>
             </div>
 
+            <div id="loadingPosts" class="loading">Loading posts...</div>
             <div id="postsManagementList">
                 <!-- Posts management list will be loaded here -->
             </div>
@@ -438,29 +449,109 @@
         </div>
     </footer>
 
+    <!-- Supabase JavaScript SDK -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
     <script>
-        // Blog data storage
-        let blogPosts = JSON.parse(localStorage.getItem('emmitiBlogPosts')) || [
-            {
-                id: 1,
-                title: "Welcome to Emmiti",
-                content: "This is my first blog post! I'm excited to share my thoughts and experiences with you through this personal blog. Here you'll find my musings on life, technology, and various topics that interest me.",
-                date: new Date().toLocaleDateString()
-            }
-        ];
+        // Supabase configuration
+        const SUPABASE_URL = 'https://yidctoziiyboolfzxdzs.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGN0b3ppaXlib29sZnp4ZHpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NTk3MDgsImV4cCI6MjA3MzQzNTcwOH0.yUXFRodg3nMoUmXjfgtsO6tzYxZ2BFvZQ8AOpgn3_Bk';
 
+        // Initialize Supabase client
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Global variables
+        let blogPosts = [];
         let isLoggedIn = localStorage.getItem('emmitiLoggedIn') === 'true';
-        let postIdCounter = parseInt(localStorage.getItem('emmitiPostIdCounter')) || 2;
 
-        // Admin credentials (in a real application, this would be server-side)
+        // Admin credentials
         const adminCredentials = {
             username: 'admin',
             password: 'emmiti2024'
         };
 
+        // Database functions
+        async function loadPostsFromDB() {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                blogPosts = data.map(post => ({
+                    id: post.id,
+                    title: post.title,
+                    content: post.content,
+                    date: new Date(post.date || post.created_at).toLocaleDateString()
+                }));
+
+                return true;
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                return false;
+            }
+        }
+
+        async function savePostToDB(postData) {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .insert([{
+                        title: postData.title,
+                        content: postData.content,
+                        date: new Date().toISOString().split('T')[0]
+                    }])
+                    .select();
+
+                if (error) throw error;
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error saving post:', error);
+                return { success: false, error };
+            }
+        }
+
+        async function updatePostInDB(id, postData) {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .update({
+                        title: postData.title,
+                        content: postData.content,
+                        date: new Date().toISOString().split('T')[0]
+                    })
+                    .eq('id', id)
+                    .select();
+
+                if (error) throw error;
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error updating post:', error);
+                return { success: false, error };
+            }
+        }
+
+        async function deletePostFromDB(id) {
+            try {
+                const { error } = await supabase
+                    .from('posts')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                return { success: true };
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                return { success: false, error };
+            }
+        }
+
         // Initialize the application
-        function init() {
+        async function init() {
             updateUI();
+            await loadPostsFromDB();
             displayBlogPosts();
         }
 
@@ -497,16 +588,16 @@
             }
         }
 
-        function showAdmin() {
+        async function showAdmin() {
             hideAllSections();
             document.getElementById('adminPanel').classList.add('show');
-            displayAdminPosts();
+            await displayAdminPosts();
         }
 
-        function showPosts() {
+        async function showPosts() {
             hideAllSections();
             document.getElementById('postsSection').classList.add('show');
-            displayPostsManagement();
+            await displayPostsManagement();
         }
 
         function showCreatePost() {
@@ -553,9 +644,15 @@
         }
 
         // Display posts in management section
-        function displayPostsManagement() {
+        async function displayPostsManagement() {
+            const loadingEl = document.getElementById('loadingPosts');
             const postsManagementList = document.getElementById('postsManagementList');
+
+            loadingEl.style.display = 'block';
             postsManagementList.innerHTML = '';
+
+            await loadPostsFromDB();
+            loadingEl.style.display = 'none';
 
             if (blogPosts.length === 0) {
                 postsManagementList.innerHTML = '<p style="color: #888; text-align: center; padding: 2rem;">No posts to manage. Create your first post!</p>';
@@ -585,9 +682,15 @@
         }
 
         // Display blog posts on home page
-        function displayBlogPosts() {
+        async function displayBlogPosts() {
+            const loadingEl = document.getElementById('loadingHome');
             const blogGrid = document.getElementById('blogGrid');
+
+            loadingEl.style.display = 'block';
             blogGrid.innerHTML = '';
+
+            await loadPostsFromDB();
+            loadingEl.style.display = 'none';
 
             if (blogPosts.length === 0) {
                 blogGrid.innerHTML = '<p style="text-align: center; color: #888;">No blog posts yet.</p>';
@@ -608,9 +711,15 @@
         }
 
         // Display posts in admin panel
-        function displayAdminPosts() {
+        async function displayAdminPosts() {
+            const loadingEl = document.getElementById('loadingAdmin');
             const adminPostsList = document.getElementById('adminPostsList');
+
+            loadingEl.style.display = 'block';
             adminPostsList.innerHTML = '';
+
+            await loadPostsFromDB();
+            loadingEl.style.display = 'none';
 
             if (blogPosts.length === 0) {
                 adminPostsList.innerHTML = '<p style="color: #888;">No posts to manage.</p>';
@@ -655,68 +764,31 @@
             }
         });
 
-        // Post form handler
-        document.getElementById('postForm').addEventListener('submit', function(e) {
+        // Post form handler (admin panel)
+        document.getElementById('postForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const title = document.getElementById('postTitle').value.trim();
             const content = document.getElementById('postContent').value.trim();
 
             if (title && content) {
-                const newPost = {
-                    id: postIdCounter++,
-                    title: title,
-                    content: content,
-                    date: new Date().toLocaleDateString()
-                };
+                const result = await savePostToDB({ title, content });
 
-                blogPosts.unshift(newPost); // Add to beginning of array
-                saveBlogData();
+                if (result.success) {
+                    // Clear form
+                    document.getElementById('postTitle').value = '';
+                    document.getElementById('postContent').value = '';
 
-                // Clear form
-                document.getElementById('postTitle').value = '';
-                document.getElementById('postContent').value = '';
-
-                displayAdminPosts();
-                alert('Post published successfully!');
+                    await displayAdminPosts();
+                    alert('Post published successfully!');
+                } else {
+                    alert('Error publishing post. Please try again.');
+                }
             }
         });
 
-        // Delete post from admin panel
-        function deletePost(postId) {
-            if (confirm('Are you sure you want to delete this post?')) {
-                blogPosts = blogPosts.filter(post => post.id !== postId);
-                saveBlogData();
-                displayAdminPosts();
-                alert('Post deleted successfully!');
-            }
-        }
-
-        // Delete post from management page
-        function deletePostFromManagement(postId) {
-            if (confirm('Are you sure you want to delete this post?')) {
-                blogPosts = blogPosts.filter(post => post.id !== postId);
-                saveBlogData();
-                displayPostsManagement();
-                alert('Post deleted successfully!');
-            }
-        }
-
-        // Clear form (for admin panel)
-        function clearForm() {
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-        }
-
-        // Clear create/edit form
-        function clearCreateEditForm() {
-            document.getElementById('editPostId').value = '';
-            document.getElementById('editPostTitle').value = '';
-            document.getElementById('editPostContent').value = '';
-        }
-
-        // Handle create/edit form submission
-        document.getElementById('createEditForm').addEventListener('submit', function(e) {
+        // Create/Edit form handler
+        document.getElementById('createEditForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const postId = document.getElementById('editPostId').value;
@@ -724,33 +796,67 @@
             const content = document.getElementById('editPostContent').value.trim();
 
             if (title && content) {
+                let result;
+
                 if (postId) {
                     // Edit existing post
-                    const post = blogPosts.find(p => p.id == postId);
-                    if (post) {
-                        post.title = title;
-                        post.content = content;
-                        post.date = new Date().toLocaleDateString(); // Update date
-                        saveBlogData();
+                    result = await updatePostInDB(postId, { title, content });
+                    if (result.success) {
                         alert('Post updated successfully!');
                         showPosts();
+                    } else {
+                        alert('Error updating post. Please try again.');
                     }
                 } else {
                     // Create new post
-                    const newPost = {
-                        id: postIdCounter++,
-                        title: title,
-                        content: content,
-                        date: new Date().toLocaleDateString()
-                    };
-
-                    blogPosts.unshift(newPost);
-                    saveBlogData();
-                    alert('Post created successfully!');
-                    showPosts();
+                    result = await savePostToDB({ title, content });
+                    if (result.success) {
+                        alert('Post created successfully!');
+                        showPosts();
+                    } else {
+                        alert('Error creating post. Please try again.');
+                    }
                 }
             }
         });
+
+        // Delete post from admin panel
+        async function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                const result = await deletePostFromDB(postId);
+                if (result.success) {
+                    await displayAdminPosts();
+                    alert('Post deleted successfully!');
+                } else {
+                    alert('Error deleting post. Please try again.');
+                }
+            }
+        }
+
+        // Delete post from management page
+        async function deletePostFromManagement(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                const result = await deletePostFromDB(postId);
+                if (result.success) {
+                    await displayPostsManagement();
+                    alert('Post deleted successfully!');
+                } else {
+                    alert('Error deleting post. Please try again.');
+                }
+            }
+        }
+
+        // Clear forms
+        function clearForm() {
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+
+        function clearCreateEditForm() {
+            document.getElementById('editPostId').value = '';
+            document.getElementById('editPostTitle').value = '';
+            document.getElementById('editPostContent').value = '';
+        }
 
         // Logout
         function logout() {
@@ -763,13 +869,7 @@
             }
         }
 
-        // Save blog data to localStorage
-        function saveBlogData() {
-            localStorage.setItem('emmitiBlogPosts', JSON.stringify(blogPosts));
-            localStorage.setItem('emmitiPostIdCounter', postIdCounter.toString());
-        }
-
-        // Initialize the application when page loads
+        // Initialize when page loads
         window.addEventListener('load', init);
     </script>
 </body>
