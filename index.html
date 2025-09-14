@@ -458,7 +458,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGN0b3ppaXlib29sZnp4ZHpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4NTk3MDgsImV4cCI6MjA3MzQzNTcwOH0.yUXFRodg3nMoUmXjfgtsO6tzYxZ2BFvZQ8AOpgn3_Bk';
 
         // Initialize Supabase client
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Global variables
         let blogPosts = [];
@@ -473,7 +473,7 @@
         // Database functions
         async function loadPostsFromDB() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('posts')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -496,7 +496,7 @@
 
         async function savePostToDB(postData) {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('posts')
                     .insert([{
                         title: postData.title,
@@ -515,7 +515,7 @@
 
         async function updatePostInDB(id, postData) {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('posts')
                     .update({
                         title: postData.title,
@@ -535,7 +535,7 @@
 
         async function deletePostFromDB(id) {
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('posts')
                     .delete()
                     .eq('id', id);
