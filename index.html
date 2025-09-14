@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emmiti - Personal Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #000000, #1a0d1a, #2d1b2d);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #8b0040;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #8b0040, #6a0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #8b0040;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(rgba(139, 0, 64, 0.1), rgba(106, 0, 128, 0.1));
+            border-radius: 15px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #8b0040, #6a0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Blog Posts Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .blog-card {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 0, 64, 0.3);
+        }
+
+        .blog-card h3 {
+            color: #8b0040;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .blog-card .date {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .blog-card p {
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            background: linear-gradient(45deg, #8b0040, #6a0080);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .read-more:hover {
+            transform: scale(1.05);
+        }
+
+        /* Login Form */
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+            display: none;
+        }
+
+        .login-container.show {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8b0040;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #8b0040, #6a0080);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 1px solid #333;
+        }
+
+        .admin-panel.show {
+            display: block;
+        }
+
+        .admin-panel h2 {
+            color: #8b0040;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-panel textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            resize: vertical;
+        }
+
+        .admin-panel textarea:focus {
+            outline: none;
+            border-color: #8b0040;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #8b0040, #cc0000);
+        }
+
+        /* Post View */
+        .post-view {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 1px solid #333;
+        }
+
+        .post-view.show {
+            display: block;
+        }
+
+        .post-view h1 {
+            color: #8b0040;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-view .post-date {
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-view .post-content {
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid #8b0040;
+            color: #8b0040;
+        }
+
+        .back-btn:hover {
+            background: #8b0040;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #888;
+            border-top: 1px solid #333;
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">Emmiti</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showHome()">Home</a></li>
+                <li><a href="#" onclick="showPosts()" id="postsBtn" class="hidden">Posts</a></li>
+                <li><a href="#" onclick="showLogin()">Login</a></li>
+                <li><a href="#" onclick="logout()" id="logoutBtn" class="hidden">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Home Section -->
+        <section id="homeSection">
+            <div class="hero">
+                <h1>Welcome to Emmiti</h1>
+                <p>My personal space where I share thoughts, experiences, and insights about life, technology, and everything in between.</p>
+            </div>
+
+            <div class="blog-grid" id="blogGrid">
+                <!-- Blog posts will be dynamically loaded here -->
+            </div>
+        </section>
+
+        <!-- Login Section -->
+        <section id="loginSection" class="login-container">
+            <h2 style="color: #8b0040; text-align: center; margin-bottom: 1.5rem;">Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+            </form>
+        </section>
+
+        <!-- Admin Panel -->
+        <section id="adminPanel" class="admin-panel">
+            <h2>Admin Panel - Create New Post</h2>
+            <form id="postForm">
+                <div class="form-group">
+                    <label for="postTitle">Post Title:</label>
+                    <input type="text" id="postTitle" name="postTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="postContent">Post Content:</label>
+                    <textarea id="postContent" name="postContent" placeholder="Write your blog post here..." required></textarea>
+                </div>
+                <div class="admin-controls">
+                    <button type="submit" class="btn">Publish Post</button>
+                    <button type="button" class="btn btn-danger" onclick="clearForm()">Clear</button>
+                </div>
+            </form>
+
+            <h3 style="color: #8b0040; margin: 2rem 0 1rem 0;">Manage Posts</h3>
+            <div id="adminPostsList">
+                <!-- Admin posts list will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Posts Management Section -->
+        <section id="postsSection" class="admin-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #8b0040;">Manage Posts</h2>
+                <button class="btn" onclick="showCreatePost()">+ New Post</button>
+            </div>
+
+            <div id="postsManagementList">
+                <!-- Posts management list will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Create/Edit Post Section -->
+        <section id="createEditSection" class="admin-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="color: #8b0040;" id="createEditTitle">Create New Post</h2>
+                <button class="btn back-btn" onclick="showPosts()">← Back to Posts</button>
+            </div>
+
+            <form id="createEditForm">
+                <input type="hidden" id="editPostId" value="">
+                <div class="form-group">
+                    <label for="editPostTitle">Post Title:</label>
+                    <input type="text" id="editPostTitle" name="postTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPostContent">Post Content:</label>
+                    <textarea id="editPostContent" name="postContent" placeholder="Write your blog post here..." required></textarea>
+                </div>
+                <div class="admin-controls">
+                    <button type="submit" class="btn" id="savePostBtn">Save Post</button>
+                    <button type="button" class="btn btn-danger" onclick="clearCreateEditForm()">Clear</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Post View -->
+        <section id="postView" class="post-view">
+            <button class="btn back-btn" onclick="showHome()">← Back to Home</button>
+            <h1 id="viewPostTitle"></h1>
+            <div class="post-date" id="viewPostDate"></div>
+            <div class="post-content" id="viewPostContent"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Emmiti Blog. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Blog data storage
+        let blogPosts = JSON.parse(localStorage.getItem('emmitiBlogPosts')) || [
+            {
+                id: 1,
+                title: "Welcome to Emmiti",
+                content: "This is my first blog post! I'm excited to share my thoughts and experiences with you through this personal blog. Here you'll find my musings on life, technology, and various topics that interest me.",
+                date: new Date().toLocaleDateString()
+            }
+        ];
+
+        let isLoggedIn = localStorage.getItem('emmitiLoggedIn') === 'true';
+        let postIdCounter = parseInt(localStorage.getItem('emmitiPostIdCounter')) || 2;
+
+        // Admin credentials (in a real application, this would be server-side)
+        const adminCredentials = {
+            username: 'admin',
+            password: 'emmiti2024'
+        };
+
+        // Initialize the application
+        function init() {
+            updateUI();
+            displayBlogPosts();
+        }
+
+        // Update UI based on login status
+        function updateUI() {
+            const loginBtn = document.querySelector('a[onclick="showLogin()"]');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const postsBtn = document.getElementById('postsBtn');
+
+            if (isLoggedIn) {
+                loginBtn.style.display = 'none';
+                logoutBtn.classList.remove('hidden');
+                postsBtn.classList.remove('hidden');
+            } else {
+                loginBtn.style.display = 'block';
+                logoutBtn.classList.add('hidden');
+                postsBtn.classList.add('hidden');
+            }
+        }
+
+        // Show different sections
+        function showHome() {
+            hideAllSections();
+            document.getElementById('homeSection').style.display = 'block';
+            displayBlogPosts();
+        }
+
+        function showLogin() {
+            if (isLoggedIn) {
+                showAdmin();
+            } else {
+                hideAllSections();
+                document.getElementById('loginSection').classList.add('show');
+            }
+        }
+
+        function showAdmin() {
+            hideAllSections();
+            document.getElementById('adminPanel').classList.add('show');
+            displayAdminPosts();
+        }
+
+        function showPosts() {
+            hideAllSections();
+            document.getElementById('postsSection').classList.add('show');
+            displayPostsManagement();
+        }
+
+        function showCreatePost() {
+            hideAllSections();
+            document.getElementById('createEditSection').classList.add('show');
+            document.getElementById('createEditTitle').textContent = 'Create New Post';
+            document.getElementById('savePostBtn').textContent = 'Create Post';
+            clearCreateEditForm();
+        }
+
+        function showEditPost(postId) {
+            const post = blogPosts.find(p => p.id === postId);
+            if (post) {
+                hideAllSections();
+                document.getElementById('createEditSection').classList.add('show');
+                document.getElementById('createEditTitle').textContent = 'Edit Post';
+                document.getElementById('savePostBtn').textContent = 'Update Post';
+
+                document.getElementById('editPostId').value = post.id;
+                document.getElementById('editPostTitle').value = post.title;
+                document.getElementById('editPostContent').value = post.content;
+            }
+        }
+
+        function hideAllSections() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('loginSection').classList.remove('show');
+            document.getElementById('adminPanel').classList.remove('show');
+            document.getElementById('postsSection').classList.remove('show');
+            document.getElementById('createEditSection').classList.remove('show');
+            document.getElementById('postView').classList.remove('show');
+        }
+
+        function showPost(postId) {
+            const post = blogPosts.find(p => p.id === postId);
+            if (post) {
+                hideAllSections();
+                document.getElementById('postView').classList.add('show');
+
+                document.getElementById('viewPostTitle').textContent = post.title;
+                document.getElementById('viewPostDate').textContent = post.date;
+                document.getElementById('viewPostContent').innerHTML = post.content.replace(/\n/g, '<br>');
+            }
+        }
+
+        // Display posts in management section
+        function displayPostsManagement() {
+            const postsManagementList = document.getElementById('postsManagementList');
+            postsManagementList.innerHTML = '';
+
+            if (blogPosts.length === 0) {
+                postsManagementList.innerHTML = '<p style="color: #888; text-align: center; padding: 2rem;">No posts to manage. Create your first post!</p>';
+                return;
+            }
+
+            blogPosts.forEach(post => {
+                const postItem = document.createElement('div');
+                postItem.style.cssText = 'background: rgba(0,0,0,0.3); padding: 1.5rem; margin: 1rem 0; border-radius: 12px; border: 1px solid #333;';
+                postItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <h3 style="color: #8b0040; margin-bottom: 0.5rem;">${post.title}</h3>
+                            <div style="color: #888; font-size: 0.9rem; margin-bottom: 0.5rem;">${post.date}</div>
+                            <p style="color: #ccc; line-height: 1.4; margin: 0;">
+                                ${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn" onclick="showEditPost(${post.id})" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Edit</button>
+                            <button class="btn btn-danger" onclick="deletePostFromManagement(${post.id})" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Delete</button>
+                        </div>
+                    </div>
+                `;
+                postsManagementList.appendChild(postItem);
+            });
+        }
+
+        // Display blog posts on home page
+        function displayBlogPosts() {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.innerHTML = '';
+
+            if (blogPosts.length === 0) {
+                blogGrid.innerHTML = '<p style="text-align: center; color: #888;">No blog posts yet.</p>';
+                return;
+            }
+
+            blogPosts.forEach(post => {
+                const postCard = document.createElement('div');
+                postCard.className = 'blog-card';
+                postCard.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <div class="date">${post.date}</div>
+                    <p>${post.content.substring(0, 150)}${post.content.length > 150 ? '...' : ''}</p>
+                    <button class="read-more" onclick="showPost(${post.id})">Read More</button>
+                `;
+                blogGrid.appendChild(postCard);
+            });
+        }
+
+        // Display posts in admin panel
+        function displayAdminPosts() {
+            const adminPostsList = document.getElementById('adminPostsList');
+            adminPostsList.innerHTML = '';
+
+            if (blogPosts.length === 0) {
+                adminPostsList.innerHTML = '<p style="color: #888;">No posts to manage.</p>';
+                return;
+            }
+
+            blogPosts.forEach(post => {
+                const postItem = document.createElement('div');
+                postItem.style.cssText = 'background: rgba(0,0,0,0.3); padding: 1rem; margin: 0.5rem 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;';
+                postItem.innerHTML = `
+                    <div>
+                        <strong>${post.title}</strong>
+                        <br>
+                        <small style="color: #888;">${post.date}</small>
+                    </div>
+                    <button class="btn btn-danger" onclick="deletePost(${post.id})" style="background: #8b0040;">Delete</button>
+                `;
+                adminPostsList.appendChild(postItem);
+            });
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                isLoggedIn = true;
+                localStorage.setItem('emmitiLoggedIn', 'true');
+                updateUI();
+                showAdmin();
+
+                // Clear form
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+
+                alert('Login successful!');
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        });
+
+        // Post form handler
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+
+            if (title && content) {
+                const newPost = {
+                    id: postIdCounter++,
+                    title: title,
+                    content: content,
+                    date: new Date().toLocaleDateString()
+                };
+
+                blogPosts.unshift(newPost); // Add to beginning of array
+                saveBlogData();
+
+                // Clear form
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+
+                displayAdminPosts();
+                alert('Post published successfully!');
+            }
+        });
+
+        // Delete post from admin panel
+        function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                blogPosts = blogPosts.filter(post => post.id !== postId);
+                saveBlogData();
+                displayAdminPosts();
+                alert('Post deleted successfully!');
+            }
+        }
+
+        // Delete post from management page
+        function deletePostFromManagement(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                blogPosts = blogPosts.filter(post => post.id !== postId);
+                saveBlogData();
+                displayPostsManagement();
+                alert('Post deleted successfully!');
+            }
+        }
+
+        // Clear form (for admin panel)
+        function clearForm() {
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+
+        // Clear create/edit form
+        function clearCreateEditForm() {
+            document.getElementById('editPostId').value = '';
+            document.getElementById('editPostTitle').value = '';
+            document.getElementById('editPostContent').value = '';
+        }
+
+        // Handle create/edit form submission
+        document.getElementById('createEditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const postId = document.getElementById('editPostId').value;
+            const title = document.getElementById('editPostTitle').value.trim();
+            const content = document.getElementById('editPostContent').value.trim();
+
+            if (title && content) {
+                if (postId) {
+                    // Edit existing post
+                    const post = blogPosts.find(p => p.id == postId);
+                    if (post) {
+                        post.title = title;
+                        post.content = content;
+                        post.date = new Date().toLocaleDateString(); // Update date
+                        saveBlogData();
+                        alert('Post updated successfully!');
+                        showPosts();
+                    }
+                } else {
+                    // Create new post
+                    const newPost = {
+                        id: postIdCounter++,
+                        title: title,
+                        content: content,
+                        date: new Date().toLocaleDateString()
+                    };
+
+                    blogPosts.unshift(newPost);
+                    saveBlogData();
+                    alert('Post created successfully!');
+                    showPosts();
+                }
+            }
+        });
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                isLoggedIn = false;
+                localStorage.setItem('emmitiLoggedIn', 'false');
+                updateUI();
+                showHome();
+                alert('Logged out successfully!');
+            }
+        }
+
+        // Save blog data to localStorage
+        function saveBlogData() {
+            localStorage.setItem('emmitiBlogPosts', JSON.stringify(blogPosts));
+            localStorage.setItem('emmitiPostIdCounter', postIdCounter.toString());
+        }
+
+        // Initialize the application when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
