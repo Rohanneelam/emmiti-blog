@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emmiti - Personal Blog</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600&family=Libre+Baskerville:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -12,7 +16,7 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #000000, #1a0d1a, #2d1b2d);
             color: #ffffff;
             line-height: 1.6;
@@ -110,9 +114,10 @@
         .blog-card {
             background: rgba(0, 0, 0, 0.5);
             border-radius: 15px;
-            padding: 1.5rem;
+            overflow: hidden;
             border: 1px solid #333;
             transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
         }
 
         .blog-card:hover {
@@ -120,10 +125,38 @@
             box-shadow: 0 10px 30px rgba(139, 0, 64, 0.3);
         }
 
-        .blog-card h3 {
-            color: #8b0040;
-            margin-bottom: 0.5rem;
-            font-size: 1.3rem;
+        .blog-card .cover-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px) brightness(0.7);
+            position: relative;
+        }
+
+        .blog-card .cover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .blog-card .cover-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 0 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .blog-card .card-content {
+            padding: 1.5rem;
         }
 
         .blog-card .date {
@@ -151,6 +184,93 @@
             transform: scale(1.05);
         }
 
+        /* Rich Text Editor */
+        .editor-toolbar {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid #333;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .editor-group {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            border-right: 1px solid #555;
+            padding-right: 8px;
+        }
+
+        .editor-group:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .editor-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .editor-btn:hover {
+            background: rgba(139, 0, 64, 0.5);
+        }
+
+        .editor-btn.active {
+            background: #8b0040;
+            border-color: #8b0040;
+        }
+
+        .editor-select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #555;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .rich-editor {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .rich-editor:focus {
+            outline: none;
+            border-color: #8b0040;
+        }
+
+        /* Font Classes */
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-merriweather { font-family: 'Merriweather', serif; }
+        .font-open-sans { font-family: 'Open Sans', sans-serif; }
+        .font-lato { font-family: 'Lato', sans-serif; }
+        .font-roboto { font-family: 'Roboto', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-source-sans { font-family: 'Source Sans Pro', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-crimson { font-family: 'Crimson Text', serif; }
+        .font-libre { font-family: 'Libre Baskerville', serif; }
+        .font-nunito { font-family: 'Nunito', sans-serif; }
+
         /* Login Form */
         .login-container {
             max-width: 400px;
@@ -176,7 +296,7 @@
             color: #cccccc;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 0.8rem;
             border: 1px solid #333;
@@ -185,7 +305,7 @@
             color: #ffffff;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #8b0040;
         }
@@ -224,22 +344,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .admin-panel textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: 1rem;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            color: #ffffff;
-            resize: vertical;
-        }
-
-        .admin-panel textarea:focus {
-            outline: none;
-            border-color: #8b0040;
-        }
-
         .admin-controls {
             display: flex;
             gap: 1rem;
@@ -251,33 +355,146 @@
             background: linear-gradient(45deg, #8b0040, #cc0000);
         }
 
+        /* Cover Image Upload */
+        .cover-upload-container {
+            margin-bottom: 1rem;
+        }
+
+        .cover-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #555;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .cover-preview.has-image {
+            border: 2px solid #8b0040;
+        }
+
+        .cover-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px) brightness(0.6);
+            z-index: 1;
+        }
+
+        .cover-preview-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 1rem;
+        }
+
+        .cover-title-preview {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 1rem;
+        }
+
+        .upload-placeholder {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .remove-cover-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(139, 0, 64, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 3;
+            font-size: 16px;
+        }
+
         /* Post View */
         .post-view {
             display: none;
             background: rgba(0, 0, 0, 0.7);
-            padding: 2rem;
+            padding: 0;
             border-radius: 15px;
             margin: 2rem 0;
             border: 1px solid #333;
+            overflow: hidden;
         }
 
         .post-view.show {
             display: block;
         }
 
-        .post-view h1 {
-            color: #8b0040;
+        .post-header {
+            position: relative;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(4px) brightness(0.5);
+            z-index: 1;
+        }
+
+        .post-header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .post-title {
+            font-size: 3rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
-        .post-view .post-date {
-            color: #888;
-            margin-bottom: 1.5rem;
+        .post-date {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        .post-view .post-content {
+        .post-content {
+            padding: 2rem;
             color: #cccccc;
             line-height: 1.8;
+        }
+
+        .post-nav {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #333;
         }
 
         .back-btn {
@@ -320,6 +537,27 @@
 
             .blog-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .editor-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .editor-group {
+                border-right: none;
+                border-bottom: 1px solid #555;
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
+
+            .editor-group:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
             }
         }
 
@@ -380,10 +618,74 @@
                     <label for="postTitle">Post Title:</label>
                     <input type="text" id="postTitle" name="postTitle" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="postContent">Post Content:</label>
-                    <textarea id="postContent" name="postContent" placeholder="Write your blog post here..." required></textarea>
+                    <label for="postCover">Cover Image:</label>
+                    <input type="file" id="postCover" accept="image/*">
+                    <div class="cover-preview" id="coverPreview">
+                        <div class="cover-preview-content">
+                            <div class="cover-title-preview" id="coverTitlePreview">Your Title Here</div>
+                            <div class="upload-placeholder">Click to upload cover image</div>
+                        </div>
+                        <button type="button" class="remove-cover-btn hidden" id="removeCoverBtn">×</button>
+                    </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="postFont">Article Font:</label>
+                    <select id="postFont">
+                        <option value="font-inter">Inter (Default)</option>
+                        <option value="font-playfair">Playfair Display (Elegant)</option>
+                        <option value="font-merriweather">Merriweather (Readable)</option>
+                        <option value="font-open-sans">Open Sans (Clean)</option>
+                        <option value="font-lato">Lato (Friendly)</option>
+                        <option value="font-roboto">Roboto (Modern)</option>
+                        <option value="font-poppins">Poppins (Rounded)</option>
+                        <option value="font-montserrat">Montserrat (Geometric)</option>
+                        <option value="font-source-sans">Source Sans Pro (Technical)</option>
+                        <option value="font-crimson">Crimson Text (Classic)</option>
+                        <option value="font-libre">Libre Baskerville (Traditional)</option>
+                        <option value="font-nunito">Nunito (Soft)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Post Content:</label>
+                    <!-- Rich Text Editor Toolbar -->
+                    <div class="editor-toolbar">
+                        <div class="editor-group">
+                            <select class="editor-select" id="formatBlock">
+                                <option value="p">Paragraph</option>
+                                <option value="h1">Heading 1</option>
+                                <option value="h2">Heading 2</option>
+                                <option value="h3">Heading 3</option>
+                                <option value="h4">Subheading</option>
+                            </select>
+                        </div>
+                        <div class="editor-group">
+                            <button type="button" class="editor-btn" data-command="bold"><b>B</b></button>
+                            <button type="button" class="editor-btn" data-command="italic"><i>I</i></button>
+                            <button type="button" class="editor-btn" data-command="underline"><u>U</u></button>
+                        </div>
+                        <div class="editor-group">
+                            <select class="editor-select" id="fontSize">
+                                <option value="1">10px</option>
+                                <option value="2">12px</option>
+                                <option value="3" selected>14px</option>
+                                <option value="4">16px</option>
+                                <option value="5">18px</option>
+                                <option value="6">24px</option>
+                                <option value="7">36px</option>
+                            </select>
+                        </div>
+                        <div class="editor-group">
+                            <button type="button" class="editor-btn" data-command="insertUnorderedList">• List</button>
+                            <button type="button" class="editor-btn" data-command="insertOrderedList">1. List</button>
+                        </div>
+                    </div>
+                    <div contenteditable="true" class="rich-editor" id="postContent" placeholder="Write your blog post here..."></div>
+                </div>
+
                 <div class="admin-controls">
                     <button type="submit" class="btn">Publish Post</button>
                     <button type="button" class="btn btn-danger" onclick="clearForm()">Clear</button>
@@ -423,10 +725,74 @@
                     <label for="editPostTitle">Post Title:</label>
                     <input type="text" id="editPostTitle" name="postTitle" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="editPostContent">Post Content:</label>
-                    <textarea id="editPostContent" name="postContent" placeholder="Write your blog post here..." required></textarea>
+                    <label for="editPostCover">Cover Image:</label>
+                    <input type="file" id="editPostCover" accept="image/*">
+                    <div class="cover-preview" id="editCoverPreview">
+                        <div class="cover-preview-content">
+                            <div class="cover-title-preview" id="editCoverTitlePreview">Your Title Here</div>
+                            <div class="upload-placeholder">Click to upload cover image</div>
+                        </div>
+                        <button type="button" class="remove-cover-btn hidden" id="editRemoveCoverBtn">×</button>
+                    </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="editPostFont">Article Font:</label>
+                    <select id="editPostFont">
+                        <option value="font-inter">Inter (Default)</option>
+                        <option value="font-playfair">Playfair Display (Elegant)</option>
+                        <option value="font-merriweather">Merriweather (Readable)</option>
+                        <option value="font-open-sans">Open Sans (Clean)</option>
+                        <option value="font-lato">Lato (Friendly)</option>
+                        <option value="font-roboto">Roboto (Modern)</option>
+                        <option value="font-poppins">Poppins (Rounded)</option>
+                        <option value="font-montserrat">Montserrat (Geometric)</option>
+                        <option value="font-source-sans">Source Sans Pro (Technical)</option>
+                        <option value="font-crimson">Crimson Text (Classic)</option>
+                        <option value="font-libre">Libre Baskerville (Traditional)</option>
+                        <option value="font-nunito">Nunito (Soft)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Post Content:</label>
+                    <!-- Rich Text Editor Toolbar -->
+                    <div class="editor-toolbar">
+                        <div class="editor-group">
+                            <select class="editor-select" id="editFormatBlock">
+                                <option value="p">Paragraph</option>
+                                <option value="h1">Heading 1</option>
+                                <option value="h2">Heading 2</option>
+                                <option value="h3">Heading 3</option>
+                                <option value="h4">Subheading</option>
+                            </select>
+                        </div>
+                        <div class="editor-group">
+                            <button type="button" class="editor-btn" data-command="bold" data-editor="edit"><b>B</b></button>
+                            <button type="button" class="editor-btn" data-command="italic" data-editor="edit"><i>I</i></button>
+                            <button type="button" class="editor-btn" data-command="underline" data-editor="edit"><u>U</u></button>
+                        </div>
+                        <div class="editor-group">
+                            <select class="editor-select" id="editFontSize">
+                                <option value="1">10px</option>
+                                <option value="2">12px</option>
+                                <option value="3" selected>14px</option>
+                                <option value="4">16px</option>
+                                <option value="5">18px</option>
+                                <option value="6">24px</option>
+                                <option value="7">36px</option>
+                            </select>
+                        </div>
+                        <div class="editor-group">
+                            <button type="button" class="editor-btn" data-command="insertUnorderedList" data-editor="edit">• List</button>
+                            <button type="button" class="editor-btn" data-command="insertOrderedList" data-editor="edit">1. List</button>
+                        </div>
+                    </div>
+                    <div contenteditable="true" class="rich-editor" id="editPostContent" placeholder="Write your blog post here..."></div>
+                </div>
+
                 <div class="admin-controls">
                     <button type="submit" class="btn" id="savePostBtn">Save Post</button>
                     <button type="button" class="btn btn-danger" onclick="clearCreateEditForm()">Clear</button>
@@ -436,9 +802,15 @@
 
         <!-- Post View -->
         <section id="postView" class="post-view">
-            <button class="btn back-btn" onclick="showHome()">← Back to Home</button>
-            <h1 id="viewPostTitle"></h1>
-            <div class="post-date" id="viewPostDate"></div>
+            <div class="post-nav">
+                <button class="btn back-btn" onclick="showHome()">← Back to Home</button>
+            </div>
+            <div class="post-header" id="postHeader">
+                <div class="post-header-content">
+                    <h1 class="post-title" id="viewPostTitle"></h1>
+                    <div class="post-date" id="viewPostDate"></div>
+                </div>
+            </div>
             <div class="post-content" id="viewPostContent"></div>
         </section>
     </main>
@@ -470,7 +842,133 @@
             password: 'emmiti2024'
         };
 
-        // Database functions
+        // Rich Text Editor Functions
+        function initRichTextEditor() {
+            // Initialize toolbar buttons for main editor
+            document.querySelectorAll('.editor-btn[data-command]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const command = btn.dataset.command;
+                    const editorType = btn.dataset.editor || 'main';
+                    const editorId = editorType === 'edit' ? 'editPostContent' : 'postContent';
+
+                    document.getElementById(editorId).focus();
+                    document.execCommand(command, false, null);
+                    updateToolbarState(editorType);
+                });
+            });
+
+            // Initialize format block selectors
+            document.getElementById('formatBlock').addEventListener('change', (e) => {
+                document.getElementById('postContent').focus();
+                document.execCommand('formatBlock', false, `<${e.target.value}>`);
+            });
+
+            document.getElementById('editFormatBlock').addEventListener('change', (e) => {
+                document.getElementById('editPostContent').focus();
+                document.execCommand('formatBlock', false, `<${e.target.value}>`);
+            });
+
+            // Initialize font size selectors
+            document.getElementById('fontSize').addEventListener('change', (e) => {
+                document.getElementById('postContent').focus();
+                document.execCommand('fontSize', false, e.target.value);
+            });
+
+            document.getElementById('editFontSize').addEventListener('change', (e) => {
+                document.getElementById('editPostContent').focus();
+                document.execCommand('fontSize', false, e.target.value);
+            });
+
+            // Update toolbar state on selection change
+            document.getElementById('postContent').addEventListener('selectionchange', () => updateToolbarState('main'));
+            document.getElementById('editPostContent').addEventListener('selectionchange', () => updateToolbarState('edit'));
+        }
+
+        function updateToolbarState(editorType) {
+            const prefix = editorType === 'edit' ? 'edit' : '';
+            const commands = ['bold', 'italic', 'underline'];
+
+            commands.forEach(command => {
+                const btn = document.querySelector(`[data-command="${command}"][data-editor="${editorType}"], [data-command="${command}"]:not([data-editor])`);
+                if (btn) {
+                    btn.classList.toggle('active', document.queryCommandState(command));
+                }
+            });
+        }
+
+        // Cover Image Upload Functions
+        function initCoverImageHandlers() {
+            // Main form cover upload
+            const coverInput = document.getElementById('postCover');
+            const coverPreview = document.getElementById('coverPreview');
+            const coverTitle = document.getElementById('coverTitlePreview');
+            const removeCoverBtn = document.getElementById('removeCoverBtn');
+
+            coverInput.addEventListener('change', (e) => handleCoverUpload(e, coverPreview, removeCoverBtn));
+            coverPreview.addEventListener('click', () => coverInput.click());
+            removeCoverBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeCoverImage(coverInput, coverPreview, removeCoverBtn);
+            });
+
+            // Edit form cover upload
+            const editCoverInput = document.getElementById('editPostCover');
+            const editCoverPreview = document.getElementById('editCoverPreview');
+            const editRemoveCoverBtn = document.getElementById('editRemoveCoverBtn');
+
+            editCoverInput.addEventListener('change', (e) => handleCoverUpload(e, editCoverPreview, editRemoveCoverBtn));
+            editCoverPreview.addEventListener('click', () => editCoverInput.click());
+            editRemoveCoverBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeCoverImage(editCoverInput, editCoverPreview, editRemoveCoverBtn);
+            });
+
+            // Update cover title preview when title changes
+            document.getElementById('postTitle').addEventListener('input', (e) => {
+                document.getElementById('coverTitlePreview').textContent = e.target.value || 'Your Title Here';
+            });
+
+            document.getElementById('editPostTitle').addEventListener('input', (e) => {
+                document.getElementById('editCoverTitlePreview').textContent = e.target.value || 'Your Title Here';
+            });
+        }
+
+        function handleCoverUpload(event, previewElement, removeBtn) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    previewElement.style.backgroundImage = `url(${imageUrl})`;
+                    previewElement.querySelector('::before') && (previewElement.querySelector('::before').style.backgroundImage = `url(${imageUrl})`);
+                    previewElement.classList.add('has-image');
+                    previewElement.querySelector('.upload-placeholder').textContent = 'Click to change image';
+                    removeBtn.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeCoverImage(inputElement, previewElement, removeBtn) {
+            inputElement.value = '';
+            previewElement.style.backgroundImage = '';
+            previewElement.classList.remove('has-image');
+            previewElement.querySelector('.upload-placeholder').textContent = 'Click to upload cover image';
+            removeBtn.classList.add('hidden');
+        }
+
+        // Convert file to base64 for storage
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Database functions (enhanced to store cover images and formatting)
         async function loadPostsFromDB() {
             try {
                 const { data, error } = await supabaseClient
@@ -484,6 +982,8 @@
                     id: post.id,
                     title: post.title,
                     content: post.content,
+                    cover_image: post.cover_image,
+                    font_class: post.font_class || 'font-inter',
                     date: new Date(post.date || post.created_at).toLocaleDateString()
                 }));
 
@@ -501,6 +1001,8 @@
                     .insert([{
                         title: postData.title,
                         content: postData.content,
+                        cover_image: postData.cover_image,
+                        font_class: postData.font_class,
                         date: new Date().toISOString().split('T')[0]
                     }])
                     .select();
@@ -520,6 +1022,8 @@
                     .update({
                         title: postData.title,
                         content: postData.content,
+                        cover_image: postData.cover_image,
+                        font_class: postData.font_class,
                         date: new Date().toISOString().split('T')[0]
                     })
                     .eq('id', id)
@@ -551,6 +1055,8 @@
         // Initialize the application
         async function init() {
             updateUI();
+            initRichTextEditor();
+            initCoverImageHandlers();
             await loadPostsFromDB();
             displayBlogPosts();
         }
@@ -618,7 +1124,18 @@
 
                 document.getElementById('editPostId').value = post.id;
                 document.getElementById('editPostTitle').value = post.title;
-                document.getElementById('editPostContent').value = post.content;
+                document.getElementById('editPostContent').innerHTML = post.content;
+                document.getElementById('editPostFont').value = post.font_class || 'font-inter';
+                document.getElementById('editCoverTitlePreview').textContent = post.title;
+
+                // Set cover image if exists
+                if (post.cover_image) {
+                    const editCoverPreview = document.getElementById('editCoverPreview');
+                    editCoverPreview.style.backgroundImage = `url(${post.cover_image})`;
+                    editCoverPreview.classList.add('has-image');
+                    editCoverPreview.querySelector('.upload-placeholder').textContent = 'Click to change image';
+                    document.getElementById('editRemoveCoverBtn').classList.remove('hidden');
+                }
             }
         }
 
@@ -639,7 +1156,19 @@
 
                 document.getElementById('viewPostTitle').textContent = post.title;
                 document.getElementById('viewPostDate').textContent = post.date;
-                document.getElementById('viewPostContent').innerHTML = post.content.replace(/\n/g, '<br>');
+
+                const contentDiv = document.getElementById('viewPostContent');
+                contentDiv.innerHTML = post.content;
+                contentDiv.className = `post-content ${post.font_class || 'font-inter'}`;
+
+                // Set cover image if exists
+                const postHeader = document.getElementById('postHeader');
+                if (post.cover_image) {
+                    postHeader.style.backgroundImage = `url(${post.cover_image})`;
+                    postHeader.querySelector('::before').style.backgroundImage = `url(${post.cover_image})`;
+                } else {
+                    postHeader.style.backgroundImage = 'linear-gradient(135deg, #8b0040, #6a0080)';
+                }
             }
         }
 
@@ -668,7 +1197,7 @@
                             <h3 style="color: #8b0040; margin-bottom: 0.5rem;">${post.title}</h3>
                             <div style="color: #888; font-size: 0.9rem; margin-bottom: 0.5rem;">${post.date}</div>
                             <p style="color: #ccc; line-height: 1.4; margin: 0;">
-                                ${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}
+                                ${post.content.replace(/<[^>]*>/g, '').substring(0, 100)}${post.content.length > 100 ? '...' : ''}
                             </p>
                         </div>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -700,11 +1229,26 @@
             blogPosts.forEach(post => {
                 const postCard = document.createElement('div');
                 postCard.className = 'blog-card';
+
+                const coverImageHtml = post.cover_image ?
+                    `<div class="cover-image" style="background-image: url(${post.cover_image})">
+                        <div class="cover-overlay">
+                            <div class="cover-title">${post.title}</div>
+                        </div>
+                    </div>` :
+                    `<div class="cover-image" style="background: linear-gradient(135deg, #8b0040, #6a0080)">
+                        <div class="cover-overlay">
+                            <div class="cover-title">${post.title}</div>
+                        </div>
+                    </div>`;
+
                 postCard.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <div class="date">${post.date}</div>
-                    <p>${post.content.substring(0, 150)}${post.content.length > 150 ? '...' : ''}</p>
-                    <button class="read-more" onclick="showPost(${post.id})">Read More</button>
+                    ${coverImageHtml}
+                    <div class="card-content">
+                        <div class="date">${post.date}</div>
+                        <p>${post.content.replace(/<[^>]*>/g, '').substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>
+                        <button class="read-more" onclick="showPost(${post.id})">Read More</button>
+                    </div>
                 `;
                 blogGrid.appendChild(postCard);
             });
@@ -769,15 +1313,39 @@
             e.preventDefault();
 
             const title = document.getElementById('postTitle').value.trim();
-            const content = document.getElementById('postContent').value.trim();
+            const content = document.getElementById('postContent').innerHTML;
+            const fontClass = document.getElementById('postFont').value;
+            const coverFile = document.getElementById('postCover').files[0];
 
             if (title && content) {
-                const result = await savePostToDB({ title, content });
+                let coverImage = '';
+                if (coverFile) {
+                    try {
+                        coverImage = await fileToBase64(coverFile);
+                    } catch (error) {
+                        console.error('Error processing cover image:', error);
+                    }
+                }
+
+                const result = await savePostToDB({
+                    title,
+                    content,
+                    cover_image: coverImage,
+                    font_class: fontClass
+                });
 
                 if (result.success) {
                     // Clear form
                     document.getElementById('postTitle').value = '';
-                    document.getElementById('postContent').value = '';
+                    document.getElementById('postContent').innerHTML = '';
+                    document.getElementById('postCover').value = '';
+                    document.getElementById('postFont').value = 'font-inter';
+
+                    // Reset cover preview
+                    const coverPreview = document.getElementById('coverPreview');
+                    const removeCoverBtn = document.getElementById('removeCoverBtn');
+                    removeCoverImage(document.getElementById('postCover'), coverPreview, removeCoverBtn);
+                    document.getElementById('coverTitlePreview').textContent = 'Your Title Here';
 
                     await displayAdminPosts();
                     alert('Post published successfully!');
@@ -793,14 +1361,37 @@
 
             const postId = document.getElementById('editPostId').value;
             const title = document.getElementById('editPostTitle').value.trim();
-            const content = document.getElementById('editPostContent').value.trim();
+            const content = document.getElementById('editPostContent').innerHTML;
+            const fontClass = document.getElementById('editPostFont').value;
+            const coverFile = document.getElementById('editPostCover').files[0];
 
             if (title && content) {
+                let coverImage = '';
+
+                // If new cover file is uploaded
+                if (coverFile) {
+                    try {
+                        coverImage = await fileToBase64(coverFile);
+                    } catch (error) {
+                        console.error('Error processing cover image:', error);
+                    }
+                } else {
+                    // Keep existing cover image if no new file
+                    const existingPost = blogPosts.find(p => p.id == postId);
+                    coverImage = existingPost ? existingPost.cover_image : '';
+                }
+
                 let result;
+                const postData = {
+                    title,
+                    content,
+                    cover_image: coverImage,
+                    font_class: fontClass
+                };
 
                 if (postId) {
                     // Edit existing post
-                    result = await updatePostInDB(postId, { title, content });
+                    result = await updatePostInDB(postId, postData);
                     if (result.success) {
                         alert('Post updated successfully!');
                         showPosts();
@@ -809,7 +1400,7 @@
                     }
                 } else {
                     // Create new post
-                    result = await savePostToDB({ title, content });
+                    result = await savePostToDB(postData);
                     if (result.success) {
                         alert('Post created successfully!');
                         showPosts();
@@ -849,13 +1440,29 @@
         // Clear forms
         function clearForm() {
             document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
+            document.getElementById('postContent').innerHTML = '';
+            document.getElementById('postCover').value = '';
+            document.getElementById('postFont').value = 'font-inter';
+
+            // Reset cover preview
+            const coverPreview = document.getElementById('coverPreview');
+            const removeCoverBtn = document.getElementById('removeCoverBtn');
+            removeCoverImage(document.getElementById('postCover'), coverPreview, removeCoverBtn);
+            document.getElementById('coverTitlePreview').textContent = 'Your Title Here';
         }
 
         function clearCreateEditForm() {
             document.getElementById('editPostId').value = '';
             document.getElementById('editPostTitle').value = '';
-            document.getElementById('editPostContent').value = '';
+            document.getElementById('editPostContent').innerHTML = '';
+            document.getElementById('editPostCover').value = '';
+            document.getElementById('editPostFont').value = 'font-inter';
+
+            // Reset cover preview
+            const editCoverPreview = document.getElementById('editCoverPreview');
+            const editRemoveCoverBtn = document.getElementById('editRemoveCoverBtn');
+            removeCoverImage(document.getElementById('editPostCover'), editCoverPreview, editRemoveCoverBtn);
+            document.getElementById('editCoverTitlePreview').textContent = 'Your Title Here';
         }
 
         // Logout
